@@ -185,6 +185,7 @@ int main(){
             printf("Optiune invalida. Alegeti din nou\n");
         }   
     } while(optiune != 0);
+        printf("\nchanges");
     return 0;
 }
 
