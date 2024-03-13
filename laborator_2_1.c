@@ -56,6 +56,88 @@ void clearList(List* list) {
     list->head = NULL;
 }
 
+void addCar_End(List* list, Car* newCar) {
+    if (list == NULL || newCar == NULL) {
+        printf("Eroare\n");
+        return;
+    }
+
+    if (list->head == NULL) {
+        list->head = newCar;
+        return;
+    }
+
+    Car* current = list->head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = newCar;
+}
+
+void addCar_Position(List* list, Car* newCar, int position) {
+    if (list == NULL || newCar == NULL) {
+        printf("Eroare\n");
+        return;
+    }
+
+    if (position < 0) {
+        printf("Pozitie gresita\n");
+        return;
+    }
+
+    if (position == 0) {
+        newCar->next = list->head;
+        list->head = newCar;
+        return;
+    }
+
+    Car* current = list->head;
+    int currentPos = 0;
+    while (current != NULL && currentPos < position - 1) {
+        current = current->next;
+        currentPos++;
+    }
+
+    if (current == NULL) {
+        printf("Pozitie inafara limitelor\n");
+        return;
+    }
+
+    newCar->next = current->next;
+    current->next = newCar;
+}
+
+void deleteCar_Position(List* list, int position) {
+    if (list == NULL) {
+        printf("Eroare\n");
+        return;
+    }
+
+    if (list->head == NULL || position < 0) {
+        printf("Pozitie gresita sau lista goala\n");
+        return;
+    }
+
+    Car* current = list->head;
+    Car* prev = NULL;
+    int currentPos = 0;
+
+    while (current != NULL && currentPos < position) {
+        prev = current;
+        current = current->next;
+        currentPos++;
+    }
+
+    if (current == NULL) {
+        printf("Pozitie inafara limitelor\n");
+        return;
+    }
+
+    prev->next = current->next;
+    free(current);
+    printf("Masina la pozitia  %d a fost stearsa\n", position);
+}
+
 int searchCar(Car* head, const char* val, int camp) {
     Car* current = head;
     int poz = 0;
@@ -86,8 +168,7 @@ int searchCar(Car* head, const char* val, int camp) {
             if (strcmp(current->stare, val) == 0)
                 return poz;
             break;
-
-        default:
+            default:
             printf("Eroare.\n");
             return -1;
         }
@@ -152,9 +233,10 @@ int main() {
     int alegere;
     char val[50];
     int camp;
+    int position;
 
     do {
-        printf("\n1. Adauga masina\n2. Afiseaza masinile\n3. Cauta masina\n4. Sorteaza masinile dupa anul de productie\n5. Iesire\n");
+        printf("\n1. Adauga masina\n2. Afiseaza masinile\n3. Cauta masina\n4. Sorteaza masinile dupa anul de productie\n5.Sterge o masina\n6. Adauga o masina la pozitia dorita\n7.Adauga o masina la sfarsitul listei\n8. Iesire\n");
         printf("Introduceti optiunea: ");
         scanf("%d", &alegere);
 
@@ -193,10 +275,26 @@ int main() {
             break;
 
         case 5:
+        printf("Introduceti pozitia dorita pentru stergere: ");
+        scanf("%d", &position);
+        deleteCar_Position(&carList, position);
+        break;
+
+        case 6:
+        printf("Introduceti pozitia dorita: ");
+        scanf("%d", &position);
+        addCar_Position(&carList, readCar(), position);
+        break;
+
+        case 7:
+        addCar_End(&carList, readCar());
+        break;
+
+        case 8:
             deleteList(&carList);
             printf("Program terminat.\n");
             break;
-
+        
         default:
             printf("Optiune invalida.\n");
         }
